@@ -14,46 +14,49 @@ import SwiftUI
  SU는 뷰의 결합으로 하는 게 패러다임에 맞음
 */
 
+
 struct ContentView: View {
-	var emojis = ["🐶","🐱","🐭","🐰" ]
+	var emojis = ["🐶","🐱","🐭","🐰","🐻‍❄️","🐨","🦆","🐴","🐠","🌱","🌿","☘️","🍀","🎍","🎋","🍃","🌷","💐","🪨","🐚,","🍄","🍁","🌹","🥀","🌺" ]
 	@State var emojiCount = 6
 	var body: some View {
 		VStack {
-			HStack {
-				ForEach(emojis, id: \.self) { emoji in
-					CardView(content: emoji)
+			ScrollView {
+				LazyVGrid(columns: [GridItem(.adaptive(minimum: 65))]) {
+					ForEach(emojis[0 ..< emojiCount], id: \.self) { emoji in
+						CardView(content: emoji).aspectRatio(2/3, contentMode: .fit)
+					}
 				}
 			}
+			.foregroundColor(.red) // Zstack의 defalut
+			Spacer()
 			HStack {
 				remove
 				Spacer()
 				add
 			}
+			.font(.largeTitle)
 			.padding(.horizontal)
 		}
 		.padding(.horizontal)
-		.foregroundColor(.red) // Zstack의 defalut
 	}
 	var remove: some View {
 		// Button label 은 함수이다 (뷰 빌더 그래서 뷰의 결합으로 복잡한 뷰 표현 가능.)
-		Button(action: {
-			emojiCount -= 1
-		}, label: {
-			VStack {
-				Text("Remove")
-				Text("Card")
+		Button {
+			if emojiCount > 1 {
+				emojiCount -= 1
 			}
-		})
+		} label: {
+			Image(systemName: "minus.circle")
+		}
 	}
 	var add: some View {
-		Button(action: {
-			emojiCount += 1
-		}, label: {
-			VStack {
-				Text("Add")
-				Text("Card")
+		Button {
+			if emojiCount < emojis.count {
+				emojiCount += 1
 			}
-		})
+		} label: {
+			Image(systemName: "plus.circle")
+		}
 	}
 }
 struct CardView: View {
@@ -67,7 +70,7 @@ struct CardView: View {
 			
 			if isFaceUp {
 				shape.fill().foregroundColor(.white)
-				shape.stroke(lineWidth: 3)
+				shape.strokeBorder(lineWidth: 3)
 				Text(content).font(.largeTitle)
 			} else {
 				shape.fill()
@@ -84,6 +87,7 @@ struct ContentView_Previews: PreviewProvider {
 		static var previews: some View {
 			ContentView()
 				.preferredColorScheme(.dark)
+.previewInterfaceOrientation(.portrait)
 			ContentView()
 				.preferredColorScheme(.light)
 		}
